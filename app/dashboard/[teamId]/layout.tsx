@@ -1,9 +1,11 @@
 'use client';
 
 import SidebarLayout, { SidebarItem } from "@/components/sidebar-layout";
-import { SelectedTeamSwitcher, useUser } from "@stackframe/stack";
-import { BadgePercent, BarChart4, Columns3, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
+import { TeamSwitcher } from "@/components/auth/team-switcher";
+import { useAuth } from "@/lib/auth/context";
+import { BadgePercent, BarChart4, Columns3, FileText, Globe, Locate, Settings2, ShoppingBag, ShoppingCart, Users } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const navigationItems: SidebarItem[] = [
   {
@@ -20,6 +22,12 @@ const navigationItems: SidebarItem[] = [
     name: "Products",
     href: "/products",
     icon: ShoppingBag,
+    type: "item",
+  },
+  {
+    name: "Pages",
+    href: "/pages",
+    icon: FileText,
     type: "item",
   },
   {
@@ -67,8 +75,8 @@ const navigationItems: SidebarItem[] = [
     name: 'Settings',
   },
   {
-    name: "Configuration",
-    href: "/configuration",
+    name: "Settings",
+    href: "/settings",
     icon: Settings2,
     type: "item",
   },
@@ -76,20 +84,43 @@ const navigationItems: SidebarItem[] = [
 
 export default function Layout(props: { children: React.ReactNode }) {
   const params = useParams<{ teamId: string }>();
-  const user = useUser({ or: 'redirect' });
-  const team = user.useTeam(params.teamId);
+  const { user, teams, loading } = useAuth();
   const router = useRouter();
 
+  // Handle navigation in useEffect to avoid setState during render
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.push('/auth/signin');
+        return;
+      }
+
+      const team = teams.find(t => t.id === params.teamId);
+      if (!team) {
+        router.push('/dashboard');
+        return;
+      }
+    }
+  }, [loading, user, teams, params.teamId, router]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>Redirecting to sign in...</div>;
+  }
+
+  const team = teams.find(t => t.id === params.teamId);
   if (!team) {
-    router.push('/dashboard');
-    return null;
+    return <div>Redirecting to dashboard...</div>;
   }
 
   return (
     <SidebarLayout 
       items={navigationItems}
       basePath={`/dashboard/${team.id}`}
-      sidebarTop={<SelectedTeamSwitcher 
+      sidebarTop={<TeamSwitcher 
         selectedTeam={team}
         urlMap={(team) => `/dashboard/${team.id}`}
       />}

@@ -1,11 +1,12 @@
 'use client';
 
-import { UserButton, useUser } from "@stackframe/stack";
+import { UserButton } from "@/components/auth/user-button";
+import { useAuth } from "@/lib/auth/context";
 import { useTheme } from "next-themes";
 import { Logo } from "./logo";
 
 export default function HandlerHeader() {
-  const user = useUser();
+  const { user } = useAuth();
   const { theme, setTheme } = useTheme();
 
   return (

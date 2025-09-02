@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { UserButton } from "@stackframe/stack";
+import { UserButton } from "@/components/auth/user-button";
 import { LucideIcon, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -117,7 +117,6 @@ export type HeaderBreadcrumbItem = { title: string; href: string };
 
 function HeaderBreadcrumb(props: { items: SidebarItem[], baseBreadcrumb?: HeaderBreadcrumbItem[], basePath: string }) {
   const segment = useSegment(props.basePath);
-  console.log(segment)
   const item = props.items.find((item) => item.type === 'item' && item.href === segment);
   const title: string | undefined = (item as any)?.name
 

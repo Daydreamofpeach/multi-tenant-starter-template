@@ -4,20 +4,45 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { useUser } from "@stackframe/stack";
+import { useAuth } from "@/lib/auth/context";
 import { useRouter } from "next/navigation";
 
 export function PageClient() {
   const router = useRouter();
-  const user = useUser({ or: "redirect" });
-  const teams = user.useTeams();
+  const { user, teams, selectedTeam, setSelectedTeam, loading } = useAuth();
   const [teamDisplayName, setTeamDisplayName] = React.useState("");
 
   React.useEffect(() => {
-    if (teams.length > 0 && !user.selectedTeam) {
-      user.setSelectedTeam(teams[0]);
+    if (teams.length > 0 && !selectedTeam) {
+      setSelectedTeam(teams[0]);
     }
-  }, [teams, user]);
+  }, [teams, selectedTeam, setSelectedTeam]);
+
+  // Handle navigation in useEffect to avoid setState during render
+  React.useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/signin');
+    }
+  }, [loading, user, router]);
+
+  // Handle team navigation
+  React.useEffect(() => {
+    if (!loading && user && selectedTeam) {
+      router.push(`/dashboard/${selectedTeam.id}`);
+    }
+  }, [loading, user, selectedTeam, router]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>Redirecting to sign in...</div>;
+  }
+
+  if (selectedTeam) {
+    return <div>Redirecting to team dashboard...</div>;
+  }
 
   if (teams.length === 0) {
     return (
@@ -29,9 +54,28 @@ export function PageClient() {
           </p>
           <form
             className="mt-4"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              user.createTeam({ displayName: teamDisplayName });
+              try {
+                const response = await fetch('/api/teams', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ displayName: teamDisplayName }),
+                });
+
+                if (response.ok) {
+                  const data = await response.json();
+                  setSelectedTeam(data.team);
+                  router.push(`/dashboard/${data.team.id}`);
+                } else {
+                  alert('Failed to create team');
+                }
+              } catch (error) {
+                console.error('Create team error:', error);
+                alert('Failed to create team');
+              }
             }}
           >
             <div>
@@ -47,8 +91,6 @@ export function PageClient() {
         </div>
       </div>
     );
-  } else if (user.selectedTeam) {
-    router.push(`/dashboard/${user.selectedTeam.id}`);
   }
 
   return null;

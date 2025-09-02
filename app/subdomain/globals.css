@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Minimal styling for subdomain pages */
+.subdomain-content {
+  max-width: 4xl;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.subdomain-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.subdomain-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.subdomain-meta {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.subdomain-content-body {
+  line-height: 1.7;
+  color: #374151;
+}
+
+.subdomain-content-body h1,
+.subdomain-content-body h2,
+.subdomain-content-body h3,
+.subdomain-content-body h4,
+.subdomain-content-body h5,
+.subdomain-content-body h6 {
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.subdomain-content-body h1 { font-size: 2rem; }
+.subdomain-content-body h2 { font-size: 1.5rem; }
+.subdomain-content-body h3 { font-size: 1.25rem; }
+
+.subdomain-content-body p {
+  margin-bottom: 1rem;
+}
+
+.subdomain-content-body ul,
+.subdomain-content-body ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.subdomain-content-body li {
+  margin-bottom: 0.5rem;
+}
+
+.subdomain-content-body a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.subdomain-content-body a:hover {
+  color: #1d4ed8;
+}
+
+.subdomain-content-body blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.subdomain-content-body code {
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.subdomain-content-body pre {
+  background-color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.subdomain-content-body pre code {
+  background-color: transparent;
+  padding: 0;
+}
